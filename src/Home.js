@@ -6,12 +6,12 @@ import { Typography, Container } from "@mui/material";
 const Home = () => {
   let navigate = useNavigate();
   const onSearch = (input) => {
-    let path = input.trim().replace(/\s+/g, "+");
-    navigate(`search/${path}`);
+    let path = input.replace(/\s+/g, "+");
+    navigate(`search/${path}`, { state: { phrase: input } });
   };
   return (
     <>
-      <Header/>
+      <Header />
       <Container maxWidth="lg" style={{ textAlign: "center" }}>
         <Typography variant="h3" m="100px 0">
           Search Trends

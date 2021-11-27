@@ -3,11 +3,18 @@ import { TextField, Button } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
 const SearchBar = ({ onSearch, searched }) => {
-  const [phrase, setPhrase] = useState(searched);
+  const [phrase, setPhrase] = useState(searched || "");
+  const trimAndSearchIfNeeded = () => {
+      phrase.trim() !== phrase && setPhrase(phrase.trim());
+      phrase.trim() && onSearch(phrase.trim());
+  };
   const onKeyDown = (e) => {
-    if (e.keyCode === 13 && phrase) {
-      onSearch(phrase);
+    if (e.keyCode === 13) {
+      trimAndSearchIfNeeded();
     }
+  };
+  const onClick = () => {
+    trimAndSearchIfNeeded();
   };
   return (
     <div style={{ display: "flex", flexGrow: 1 }}>
@@ -23,11 +30,7 @@ const SearchBar = ({ onSearch, searched }) => {
       <Button
         variant="outlined"
         size="large"
-        onClick={() => {
-          if (phrase) {
-            onSearch(phrase);
-          }
-        }}
+        onClick={onClick}
         sx={{ ml: "10px", color: "#bbb", borderColor: "#bbb" }}
       >
         <SearchIcon />

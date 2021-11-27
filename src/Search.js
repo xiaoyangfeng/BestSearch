@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import Header from "./components/Header";
 import SearchBar from "./components/SearchBar";
 import GrowthCard from "./components/GrowthCard";
@@ -6,7 +6,16 @@ import { Typography, Container, Grid, Skeleton } from "@mui/material";
 import { useSearchByPhraseQuery } from "./app/apis/search";
 
 const Search = () => {
+  let { state } = useLocation();
   let { phrase } = useParams();
+  // If current URL is accessed DIRECTLY (from bookmark for example), the search phrase
+  // will be set as it is. Phrase will be 'one+' for http://localhost:3000/search/one+
+  // This is becasue there is no way to tell if '+' from user input or transformed from
+  // " " in this situation.
+  // if this requirement is for real production (space to +), better think about it carefully
+  if (state) {
+    phrase = state.phrase;
+  }
   let body = {
     login_token: "INTERVIEW_SIMPLY2021",
     search_phrase: phrase,
@@ -15,9 +24,8 @@ const Search = () => {
 
   let navigate = useNavigate();
   const onSearch = (input) => {
-    let path = input.trim().replace(/\s+/g, "+");
-    console.log(path);
-    navigate(`/search/${path}`);
+    let path = input.replace(/\s+/g, "+");
+    navigate(`/search/${path}`, { state: { phrase: input } });
   };
 
   return (
